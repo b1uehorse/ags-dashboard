@@ -1,14 +1,29 @@
-$bg: rgba(26, 27, 38, 0.58);
-$fg: #c0caf5;
-$muted: #7982a9;
-$accent: #7aa2f7;
-$radius-tile: 14px;
+$bg:         rgba(26, 27, 38, 0.58);
+$bg-solid:   #1a1b26;
+$fg:         #c0caf5;
+$muted:      #7982a9;
+$accent:     #7aa2f7;
+$red:        #f7768e;
+$green:      #9ece6a;
+$yellow:     #e0af68;
+$magenta:    #bb9af7;
+$cyan:       #7dcfff;
+
+$radius-tile:   14px;
+$radius-button: 10px;
+
+$font-family: "JetBrainsMono Nerd Font";
+$font-sm: 11px;
+$font-md: 13px;
+$font-lg: 16px;
+$font-xl: 22px;
+$font-hero: 36px;
 
 window, window > * {
     background: transparent;
     color: $fg;
-    font-family: "JetBrainsMono Nerd Font";
-    font-size: 13px;
+    font-family: $font-family;
+    font-size: $font-md;
 }
 
 .dashboard {
@@ -22,22 +37,127 @@ window, window > * {
     color: $fg;
 }
 
-.profile-name {
-    font-size: 16px;
-    color: $fg;
-}
-.profile-host {
-    font-size: 11px;
-    color: $muted;
+// PROFILE
+.profile-tile { padding: 1.2rem 1rem; min-width: 180px; }
+.profile-name { font-size: $font-lg; color: $fg; }
+.profile-host { font-size: $font-sm; color: $muted; }
+.avatar {
+    border: 2px solid rgba(255,255,255,0.10);
 }
 
+// QUOTE
+.quote-tile { min-height: 110px; }
+.quote-text { color: $muted; font-style: italic; }
+
+// METERS
+.meter-tile, .meter { padding: 0.7rem; min-width: 72px; min-height: 72px; }
+.meter-ring {
+    color: $accent;
+    background-color: rgba(255,255,255,0.05);
+    min-width: 56px; min-height: 56px;
+}
+.meter-icon { font-size: $font-lg; color: $fg; }
+
+// CLOCK
+.clock-tile { padding: 0.6rem 1rem; min-width: 160px; }
+.clock-time { font-size: $font-xl; color: $fg; }
+.clock-date { font-size: $font-sm; color: $muted; }
+
+// MUSIC
+.music-tile { padding: 0.8rem; min-width: 220px; }
+.music-cover {
+    background-color: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    background-image: url(".config/ags/assets/fallback.png");
+    background-size: cover;
+}
+.music-title { font-size: $font-md; color: $fg; }
+.music-artist { font-size: $font-sm; color: $muted; }
+
+// WEATHER
+.weather-tile { padding: 0.8rem; min-width: 110px; }
+.weather-day { font-size: $font-md; color: $fg; font-weight: bold; }
+.weather-icon { font-size: $font-xl; color: $cyan; }
+.weather-placeholder { font-size: $font-sm; color: $muted; font-style: italic; }
+.weather-temp { font-size: $font-sm; color: $muted; }
+
+// TASKS
+.task-tile { padding: 0.8rem 1rem; min-width: 220px; }
+.task-header { font-size: $font-sm; color: $muted; }
+.task-next { font-size: $font-md; color: $fg; font-weight: bold; }
+.task-icon { color: $accent; }
+.task-text { font-size: $font-sm; color: $muted; }
+
+// APP COLUMN
+.app-tile { padding: 0.8rem 0.5rem; min-width: 56px; }
+
+// EXPERIMENTS
+.quickcmd {
+    background: $bg;
+    border-radius: $radius-tile;
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.quickcmd-input {
+    font-family: $font-family;
+    font-size: $font-md;
+    color: $fg;
+    caret-color: $accent;
+    background: transparent;
+    border: none;
+    padding: 6px 0;
+}
+.quickcmd-out { color: $muted; font-size: $font-sm; }
+
+.np-ticker {
+    background: $bg;
+    border-radius: 999px;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.np-icon { color: $magenta; font-size: $font-md; }
+.np-text { color: $fg; font-size: $font-sm; }
+
+.ws-dots {
+    background: $bg;
+    border-radius: 999px;
+    padding: 4px 10px;
+}
+.ws-dot {
+    color: $muted;
+    background: transparent;
+    border: none;
+    padding: 0 4px;
+    font-size: 10px;
+    &.active { color: $accent; }
+    &:hover { color: $fg; }
+}
+
+.ntfy-log {
+    background: $bg;
+    border-radius: 999px;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.ntfy-icon { color: $yellow; }
+.ntfy-text { color: $fg; font-size: $font-sm; }
+
+.spark-tile { padding: 0.8rem 1rem; min-width: 180px; }
+.spark-title { font-size: $font-sm; color: $muted; }
+.sparkline { background: rgba(255,255,255,0.03); border-radius: 6px; padding: 2px; }
+.spark-bar { background: $accent; border-radius: 1px; margin-right: 1px; }
+
+.pinned-tile { padding: 1rem; min-width: 140px; }
+
+// BUTTONS
 .icon-btn {
     background: transparent;
     border: none;
     padding: 4px 8px;
     color: $fg;
-    font-size: 16px;
-    border-radius: 8px;
-    transition: 120ms ease;
+    font-size: $font-lg;
+    border-radius: $radius-button;
+    transition: all 120ms ease;
     &:hover { color: $accent; background: rgba(255,255,255,0.05); }
+    &:active { color: $magenta; }
 }
