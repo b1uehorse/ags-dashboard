@@ -1,0 +1,43 @@
+$bg: rgba(26, 27, 38, 0.58);
+$fg: #c0caf5;
+$muted: #7982a9;
+$accent: #7aa2f7;
+$radius-tile: 14px;
+
+window, window > * {
+    background: transparent;
+    color: $fg;
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 13px;
+}
+
+.dashboard {
+    padding: 8px;
+}
+
+.tile {
+    background-color: $bg;
+    border-radius: $radius-tile;
+    padding: 1rem;
+    color: $fg;
+}
+
+.profile-name {
+    font-size: 16px;
+    color: $fg;
+}
+.profile-host {
+    font-size: 11px;
+    color: $muted;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    color: $fg;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: 120ms ease;
+    &:hover { color: $accent; background: rgba(255,255,255,0.05); }
+}
