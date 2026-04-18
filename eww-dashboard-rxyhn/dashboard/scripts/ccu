@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# ccu — парсит /tmp/ccu.txt (пушится с мака) и отдаёт одно поле по флагу.
+# Формат файла:
+#   session: 20%  → через 3ч 57м
+#   week:    43%  → 23 апр в 23:00
+set -u
+FILE=/tmp/ccu.txt
+[ -f "$FILE" ] || { echo "—"; exit 0; }
+
+case "${1:-}" in
+    --session-pct) awk '/^session:/ {print $2; exit}' "$FILE" | tr -d '%' ;;
+    --week-pct)    awk '/^week:/ {print $2; exit}' "$FILE" | tr -d '%' ;;
+    --session-eta) sed -n 's/^session:[^→]*→ //p' "$FILE" | head -1 ;;
+    --week-eta)    sed -n 's/^week:[^→]*→ //p' "$FILE" | head -1 ;;
+    *) cat "$FILE" ;;
+esac

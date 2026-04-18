@@ -97,6 +97,13 @@ window, window > * {
 
 // APP COLUMN
 .app-tile { padding: 0.8rem 0.5rem; min-width: 56px; }
+.app-tile .icon-btn {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
+    // label-центровка решает "ягбы-разнобой" от разной ширины глифов
+}
+.app-tile .icon-btn label { margin: 0 auto; }
 
 // EXPERIMENTS
 .quickcmd {

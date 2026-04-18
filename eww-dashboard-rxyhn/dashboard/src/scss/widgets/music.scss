@@ -1,15 +1,14 @@
 .music-player{
-	background-color: $background;
-	padding: 0 1.5rem 1rem 1.5rem;
-	border-radius: 12px;
-	margin: .5rem;
+	@include tile;
+	padding: 0 1rem 1rem 1rem;
+	min-width: 157px;
 }
 .album_art {
 	background-size: cover;
 	background-position: center;
-	border-radius: 12px;
-	margin: 2rem 1rem 1.5rem 1rem;
-	padding: 7rem;
+	border-radius: 7px;
+	margin: 1rem .5rem .8rem .5rem;
+	padding: 5rem;
 }
 
 .artist {
@@ -24,10 +23,13 @@
 	font-style: italic;
 	font-size: 1.1em;
 	color: $foreground;
-	margin-top: -5px;
+	margin-top: -3px;
 }
 .btn_prev, .btn_play, .btn_next {
 	font-family: JetBrainsMono Nerd Font;
+	min-width: 27px;
+	min-height: 27px;
+	padding: 0;
 }
 .btn_prev {
 	color: $foreground;
@@ -44,19 +46,19 @@
 }
 .metric-player  scale trough highlight {
 	all: unset;
-	border-radius: 10px;
+	border-radius: 6px;
 	background-color: $foreground;
 }
   
 .metric-player scale trough  {
 	all: unset;
 	background-color: $background;
-	border:2px solid $foreground;
-	border-radius: 50px;
+	border:1px solid $foreground;
+	border-radius: 28px;
   }
   
 .metric-player scale trough  {
-	min-width: 200px;
-	min-height: 10px;
+	min-width: 112px;
+	min-height: 6px;
 	// margin: .5rem 1rem 0 1rem;
 }

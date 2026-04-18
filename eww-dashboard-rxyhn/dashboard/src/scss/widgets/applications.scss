@@ -1,38 +1,17 @@
-.applications{
-	background-color: $background;
-	color: $foreground;
-	border-radius: 12px;
-	margin: .5rem;
-	padding: 1rem;
+.applications {
+	@include tile;
+	padding: 1rem .5rem;
 }
-.app-firefox,
-.app-reddit,
-.app-telegram,
-.app-github,
-.app-code,
-.app-discord,
-.app-spotify{
-	padding: 1rem;
+// единый icon-btn для всех лаунчер-кнопок; min-width гарантирует
+// выравнивание разноширинных nerd-font глифов
+.applications button {
+	@include icon-btn;
+	@include nerd;
+	min-width: 29px;
+	min-height: 29px;
+	font-size: 2.3em;
+	padding: 0;
+	// GTK3 не поддерживает margin:auto; центрируем через halign на родителе
 }
-.app-firefox,
-.app-discord{
-	font-family: "Font Awesome 5 Free";
-	font-size: 2.9em;
-}
-.app-discord{
-	font-size: 2.6em;
-}
-.app-code,
-.app-reddit,
-.app-telegram,
-.app-github,
-.app-spotify{
-	font-family: JetBrainsMono Nerd Font;
-	font-size: 2.9em;
-}
-.app-code{
-	font-size: 3.1em;
-}
-.app-spotify{
-	font-size: 3.4em;
-}
+// spotify-глиф крупнее остальных — оставляем override
+.app-spotify { font-size: 2.7em; }

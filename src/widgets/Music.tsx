@@ -20,10 +20,10 @@ export default function Music() {
                     label={player((p: any) => p?.artist ?? "— offline —")}
                 />
                 <Stack orientation="h" spacing={12} halign="center">
-                    <IconButton icon="" onClick={() => execAsync("playerctl previous")} />
-                    <IconButton icon="" onClick={() => execAsync("playerctl play-pause")} />
-                    <IconButton icon="" onClick={() => execAsync("playerctl next")} />
-                    <IconButton icon="" onClick={() => execAsync("playerctl shuffle Toggle")} />
+                    <IconButton icon="⏮" onClick={() => execAsync("playerctl previous")} />
+                    <IconButton icon="⏯" onClick={() => execAsync("playerctl play-pause")} />
+                    <IconButton icon="⏭" onClick={() => execAsync("playerctl next")} />
+                    <IconButton icon="🔀" onClick={() => execAsync("playerctl shuffle Toggle")} />
                 </Stack>
             </Stack>
         </Tile>

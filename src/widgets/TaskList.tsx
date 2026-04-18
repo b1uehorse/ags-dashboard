@@ -18,10 +18,10 @@ export default function TaskList() {
             <Stack spacing={6}>
                 <label cssClasses={["task-header"]} label="Next: " halign="start" />
                 <label cssClasses={["task-next"]} label={tasksService.next} halign="start" />
-                <Row icon="" value={tasksService.highPriority((n: any) => `${n} high priority, ${n} total`)} />
-                <Row icon="" value={systemService.uptime} />
-                <Row icon="" value={tasksService.total((t: any) => `${t} tasks logged`)} />
-                <Row icon="" value={systemService.diskFree} />
+                <Row icon="★" value={tasksService.highPriority((n: any) => `${n} high priority, ${n} total`)} />
+                <Row icon="⏱" value={systemService.uptime} />
+                <Row icon="≡" value={tasksService.total((t: any) => `${t} tasks logged`)} />
+                <Row icon="◆" value={systemService.diskFree} />
             </Stack>
         </Tile>
     );

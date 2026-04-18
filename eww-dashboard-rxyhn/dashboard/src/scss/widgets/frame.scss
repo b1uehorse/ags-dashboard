@@ -1,0 +1,14 @@
+// Фоторамка: один полупрозрачный tile + область с картинкой в общей палитре
+.frame-tile {
+	@include tile;
+	padding: .6rem;
+	min-width: 157px;
+}
+.frame-img {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	border-radius: 6px;
+	min-width: 146px;
+	min-height: 90px;
+}

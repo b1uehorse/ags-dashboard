@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# oscillo — запускает cava, конвертит каждый кадр в JSON-массив для eww-for
+# Выдача: один JSON-массив чисел 0..100 в строку, ~60 fps
+# Для deflisten: eww перечитывает defvar на каждую новую линию
+set -u
+
+HERE="$(dirname "$(readlink -f "$0")")"
+CONF="$HERE/oscillo-cava.conf"
+
+# внешний while — переподключение если cava умерла (mic/audio device сменился и т.п.)
+while true; do
+    cava -p "$CONF" 2>/dev/null | \
+    while IFS= read -r line; do
+        # каждый frame: "123;456;789;..." → нормализуем 0..1000 → 0..100 → JSON
+        python3 -c '
+import sys
+parts = sys.argv[1].strip(";").split(";")
+vals = [min(100, max(0, int(int(p) / 10))) for p in parts if p]
+print("[" + ",".join(str(v) for v in vals) + "]", flush=True)
+' "$line"
+    done
+    # cava упала — ждём и пробуем снова
+    sleep 1
+done

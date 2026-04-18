@@ -6,6 +6,7 @@ type StackProps = {
     class?: string;
     hexpand?: boolean;
     vexpand?: boolean;
+    homogeneous?: boolean;
     halign?: "start" | "center" | "end" | "fill";
     valign?: "start" | "center" | "end" | "fill";
     children?: any;
@@ -24,6 +25,7 @@ export default function Stack({
     class: cls = "",
     hexpand = false,
     vexpand = false,
+    homogeneous = false,
     halign = "fill",
     valign = "fill",
     children,
@@ -35,6 +37,7 @@ export default function Stack({
             spacing={spacing}
             hexpand={hexpand}
             vexpand={vexpand}
+            homogeneous={homogeneous}
             halign={ALIGN[halign]}
             valign={ALIGN[valign]}
         >

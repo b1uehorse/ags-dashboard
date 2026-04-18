@@ -1,11 +1,13 @@
 (defwindow dashboard
     :monitor 0
+    :namespace "eww-dashboard"
     :geometry (geometry :x 0
                         :y 0
-                        :width "1050px"
-                        :height "650px"
+                        :width "1200px"
+                        :height "700px"
                         :anchor "center")
     :stacking "bottom"
     :exclusive false
+    ;; false — дашборд не должен красть фокус/клики с других окон
     :focusable false
 (dashboard))

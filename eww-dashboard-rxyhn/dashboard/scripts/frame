@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# frame — установить картинку в фоторамку дашборда.
+# Usage:
+#   frame /path/to/image.jpg     — подменить
+#   frame --clear                — убрать (вернёт fallback)
+#   frame                        — показать текущий путь
+set -u
+DEST="$HOME/.config/eww/dashboard/assets/frame.png"
+
+case "${1:-}" in
+    "")   [ -f "$DEST" ] && echo "$DEST" || echo "(нет)" ;;
+    --clear) rm -f "$DEST"; echo "очищено" ;;
+    *)
+        [ -f "$1" ] || { echo "файл не найден: $1" >&2; exit 1; }
+        # конвертим в png (если ImageMagick есть), иначе просто cp
+        if command -v magick >/dev/null 2>&1; then
+            magick "$1" -resize '400x400>' "$DEST"
+        elif command -v convert >/dev/null 2>&1; then
+            convert "$1" -resize '400x400>' "$DEST"
+        else
+            cp "$1" "$DEST"
+        fi
+        echo "установлено: $DEST"
+        ;;
+esac

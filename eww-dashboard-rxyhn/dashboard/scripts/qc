@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# qc — запустить команду и показать результат в quickcmd-виджете дашборда.
+# Usage:
+#   qc "date"
+#   qc "ls ~ | head -5"
+#   qc --clear               — очистить поля
+set -u
+
+CFG="$HOME/.config/eww/dashboard"
+EWW="eww -c $CFG"
+
+if [ "${1:-}" = "--clear" ]; then
+    $EWW update 'cmd-input=' 'cmd-out='
+    exit 0
+fi
+
+CMD="$*"
+[ -z "$CMD" ] && { echo "usage: qc \"command\"" >&2; exit 1; }
+
+$EWW update "cmd-input=$CMD"
+OUT="$(bash -c "$CMD" 2>&1 | head -12)"
+[ -z "$OUT" ] && OUT="(пусто)"
+$EWW update "cmd-out=$OUT"
+
+# заодно печатает в терминал
+printf '%s\n' "$OUT"

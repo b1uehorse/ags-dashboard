@@ -1,0 +1,22 @@
+// Осциллограф: контейнер с центральной линией + 60 тонких vertical-баров,
+// якорных в центр. Даёт визуальную непрерывную волну как на oscillo-экране.
+.oscillo {
+	@include tile;
+	padding: .8rem 1rem;
+	min-width: 157px;
+	min-height: 39px;
+}
+.oscillo-line {
+	min-height: 39px;
+	// центральная "нулевая" полоса — фон тайла просвечивает, бары рисуют
+	// симметричные отклонения вверх и вниз
+	border-top: 1px solid rgba(122, 162, 247, 0.12);
+	border-bottom: 1px solid rgba(122, 162, 247, 0.12);
+}
+.oscillo-bar {
+	min-width: 1px;
+	background-color: $cyan;
+	border-radius: 1px;
+	// слабый глоу через прозрачную рамку — даёт неоновый эффект
+	border: 1px solid rgba(115, 218, 202, 0.35);
+}

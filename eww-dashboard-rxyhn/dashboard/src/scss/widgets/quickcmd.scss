@@ -1,0 +1,31 @@
+.quickcmd {
+	@include tile;
+	padding: .8rem 1rem;
+	min-width: 157px;
+}
+.qc-prompt {
+	@include nerd;
+	color: $blue;
+	font-size: 1.1em;
+}
+.qc-input {
+	font-family: "JetBrainsMono Nerd Font";
+	font-size: 1em;
+	color: $foreground;
+	background-color: rgba(255,255,255,0.04);
+	border-radius: 4px;
+	padding: .3rem .6rem;
+	min-width: 101px;
+}
+.qc-run {
+	@include icon-btn;
+	font-size: 1em;
+	min-width: 20px;
+}
+.qc-out {
+	font-family: "JetBrainsMono Nerd Font";
+	font-size: .9em;
+	color: $foreground;
+	opacity: .8;
+	padding: .4rem .6rem 0 .6rem;
+}

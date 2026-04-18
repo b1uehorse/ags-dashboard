@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# sticker — хранилище текста стикера в файле. Виджет только читает через defpoll.
+# Редактировать можно ТОЛЬКО из терминала:
+#   sticker "новый текст"         — перезаписать
+#   sticker --append "строка"      — добавить снизу
+#   sticker --clear                — очистить
+#   sticker                        — напечатать текущее содержимое (для defpoll)
+set -u
+
+FILE="$HOME/.config/eww/dashboard/sticker.txt"
+touch "$FILE"
+
+case "${1:-}" in
+    "")
+        # дефолт: читаем для eww defpoll
+        if [ -s "$FILE" ]; then
+            cat "$FILE"
+        else
+            echo "— пусто — (sticker \"…\")"
+        fi
+        ;;
+    --append)
+        shift
+        echo "$@" >> "$FILE"
+        ;;
+    --clear)
+        : > "$FILE"
+        ;;
+    --help|-h)
+        echo "Usage: sticker [\"text\" | --append \"text\" | --clear]"
+        ;;
+    *)
+        # любой первый arg без -- — значит полная перезапись
+        printf '%s\n' "$@" > "$FILE"
+        ;;
+esac

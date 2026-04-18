@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# quickcmd-run — выполняет команду из eww-defvar cmd-input,
+# пишет stdout+stderr (до 10 строк) обратно в defvar cmd-out.
+# Безопасность: см. docs/shell-safety.md. Это осознанный личный RCE-паттерн —
+# использовать только на персональной машине.
+set -u
+CFG="$HOME/.config/eww/dashboard"
+CMD="$(eww -c "$CFG" get cmd-input 2>/dev/null)"
+
+if [ -z "$CMD" ]; then
+    eww -c "$CFG" update 'cmd-out=—'
+    exit 0
+fi
+
+# bash -c — читает из argv, не из shell-строки yuck → инъекция не страшна,
+# команда выполняется в явной подболочке, всё экранирование на bash'e
+OUT="$(bash -c "$CMD" 2>&1 | head -10)"
+# если пусто — покажем прочерк, чтобы revealer знал что показывать
+[ -z "$OUT" ] && OUT="(пусто)"
+
+eww -c "$CFG" update "cmd-out=$OUT"

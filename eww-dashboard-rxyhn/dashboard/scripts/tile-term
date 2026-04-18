@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# tile-term — «терминал-тайл»: kitty, прибит к воркспейсу 1, выглядит как tile,
+# сам переподнимается при закрытии. Внутри обычный shell — пиши что хочешь.
+#
+# usage:
+#   tile-term                 запустить (или ничего если уже бежит)
+#   tile-term --stop          остановить совсем (снимает STOP_FLAG)
+#   tile-term --respawn       внутренний режим (не вызывать руками)
+
+set -u
+
+CLASS="tile-term"
+STOP_FLAG="/tmp/${CLASS}.stop"
+PID_FILE="/tmp/${CLASS}.supervisor.pid"
+
+case "${1:-}" in
+    --stop)
+        touch "$STOP_FLAG"
+        [ -f "$PID_FILE" ] && kill "$(cat "$PID_FILE")" 2>/dev/null
+        pkill -f "kitty --class=${CLASS}" 2>/dev/null
+        rm -f "$PID_FILE"
+        exit 0
+        ;;
+    --respawn)
+        # цикл внутри: пока нет STOP_FLAG — поднимаем kitty снова
+        echo $$ > "$PID_FILE"
+        rm -f "$STOP_FLAG"
+        while [[ ! -f "$STOP_FLAG" ]]; do
+            kitty --class="$CLASS" \
+                  --title="$CLASS" \
+                  -o font_size=10 \
+                  -o background_opacity=0.55 \
+                  -o background=#1a1b26 \
+                  -o foreground=#a9b1d6 \
+                  -o hide_window_decorations=yes \
+                  -o window_padding_width=10 \
+                  -o window_border_width=0 \
+                  -o confirm_os_window_close=0 \
+                  -o cursor_trail=0 \
+                  -o enable_audio_bell=no
+            sleep 0.3
+        done
+        rm -f "$PID_FILE"
+        exit 0
+        ;;
+    "")
+        # уже бежим — ничего не делаем
+        if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+            echo "tile-term уже запущен (pid $(cat "$PID_FILE"))"
+            exit 0
+        fi
+        setsid "$0" --respawn >/tmp/${CLASS}.log 2>&1 </dev/null &
+        disown
+        exit 0
+        ;;
+    *)
+        echo "usage: $0 [--stop | --respawn]" >&2
+        exit 1
+        ;;
+esac

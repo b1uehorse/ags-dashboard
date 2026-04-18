@@ -1,0 +1,57 @@
+//////////////////////////////////////////////////////////////////////
+// Миксины фреймворка. Подключаются вторым (после variables) в eww.scss.
+// Правило: любой виджет-тайл начинается с @include tile, любая кнопка-
+// иконка — с @include icon-btn, любой nerd-глиф — с @include nerd.
+//////////////////////////////////////////////////////////////////////
+
+@mixin tile {
+    background-color: $background;
+    border-radius: 7px;
+    margin: .5rem;
+    padding: 1.5rem;
+    color: $foreground;
+}
+
+@mixin tile-alt {
+    @include tile;
+    background-color: $background-alt2;
+}
+
+@mixin tile-compact {
+    @include tile;
+    padding: .8rem 1rem;
+}
+
+@mixin icon-btn {
+    padding: .5rem .8rem;
+    border-radius: 6px;
+    color: $foreground;
+    background: transparent;
+    border: none;
+    &:hover {
+        color: $blue;
+        background-color: rgba(255, 255, 255, 0.06);
+    }
+    &:active { color: $magenta; }
+}
+
+@mixin nerd {
+    font-family: "JetBrainsMono Nerd Font";
+}
+
+@mixin mono-bold($size: 1.2em) {
+    font-family: "Comic Mono";
+    font-weight: bold;
+    font-size: $size;
+}
+
+@mixin cartograph($size: 1.1em) {
+    font-family: "Cartograph CF";
+    font-style: italic;
+    font-size: $size;
+}
+
+// Подсветка по статусу (.playing / .warn / .ok ...)
+@mixin status-border($color) {
+    border: 1px solid $color;
+}

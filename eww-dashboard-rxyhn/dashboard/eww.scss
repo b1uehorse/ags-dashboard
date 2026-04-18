@@ -4,6 +4,7 @@
 ///////////////////////////////////////////////////////////
 
 @import "src/scss/variables";
+@import "src/scss/mixins";
 @import "src/scss/index";
 
 @import "src/scss/widgets/profile";
@@ -14,6 +15,11 @@
 @import "src/scss/widgets/applications";
 @import "src/scss/widgets/weather";
 @import "src/scss/widgets/task";
+@import "src/scss/widgets/quickcmd";
+@import "src/scss/widgets/oscillo";
+@import "src/scss/widgets/sticker";
+@import "src/scss/widgets/ccu";
+@import "src/scss/widgets/frame";
 
   
 

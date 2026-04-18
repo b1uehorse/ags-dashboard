@@ -1,0 +1,24 @@
+// Стикер: нейтральный полупрозрачный тайл в общей палитре дашборда
+.sticker-tile {
+	@include tile;
+	padding: 1rem 1.2rem;
+	min-width: 157px;
+	min-height: 90px;
+}
+.sticker-icon {
+	@include nerd;
+	color: $foreground;
+	opacity: .55;
+	font-size: 1em;
+}
+.sticker-title {
+	@include mono-bold(.85em);
+	color: $foreground;
+	opacity: .55;
+}
+.sticker-body {
+	font-family: "Comic Mono";
+	font-size: 1em;
+	color: $foreground;
+	opacity: .85;
+}
