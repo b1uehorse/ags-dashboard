@@ -1,4 +1,5 @@
-$bg:         rgba(26, 27, 38, 0.35);
+$bg:         rgba(26, 27, 38, 0.55);
+$bg-shell:   rgba(13, 14, 22, 0.75);
 $bg-solid:   #1a1b26;
 $fg:         #c0caf5;
 $muted:      #7982a9;
@@ -27,15 +28,18 @@ window, window > * {
 }
 
 .dashboard {
-    padding: 12px;
+    padding: 24px;
+    background-color: $bg-shell;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.06);
 }
 
 .tile {
-    background-color: $bg;
+    background-color: rgba(255,255,255,0.04);
     border-radius: $radius-tile;
     padding: 1.3rem;
     color: $fg;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.04);
 }
 
 // PROFILE
