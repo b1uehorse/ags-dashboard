@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Отдаёт JSON с метриками. Один вызов — один опрос nvidia-smi и sensors.
+# Поля: cpu, cpu_t, gpu, gpu_t, ram, vram (все — проценты или °C, целые числа).
+
+set -u
+
+# CPU load (1-минутный average делённый на ядра * 100, зажатый в [0,100])
+cores=$(nproc)
+load=$(awk '{print $1}' /proc/loadavg)
+cpu=$(awk -v l="$load" -v c="$cores" 'BEGIN{v=l/c*100; if(v>100)v=100; printf "%d", v}')
+
+# CPU temp — Package через coretemp, °C
+cpu_t=0
+for f in /sys/class/hwmon/hwmon*/name; do
+  [[ "$(cat "$f" 2>/dev/null)" == "coretemp" ]] || continue
+  dir=$(dirname "$f")
+  # ищем temp*_label с "Package"
+  for lbl in "$dir"/temp*_label; do
+    [[ -f "$lbl" ]] || continue
+    if grep -q "Package" "$lbl" 2>/dev/null; then
+      raw="${lbl/_label/_input}"
+      cpu_t=$(awk -v v="$(cat "$raw")" 'BEGIN{printf "%d", v/1000}')
+      break 2
+    fi
+  done
+done
+
+# RAM
+ram=$(awk '/MemTotal/{t=$2} /MemAvailable/{a=$2} END{printf "%d", (t-a)*100/t}' /proc/meminfo)
+
+# GPU (nvidia): util, mem_used, mem_total, temp
+gpu=0; gpu_t=0; vram=0
+if command -v nvidia-smi >/dev/null 2>&1; then
+  read -r g_util g_mem_u g_mem_t g_temp < <(nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu --format=csv,noheader,nounits 2>/dev/null | tr ',' ' ')
+  gpu=${g_util:-0}
+  gpu_t=${g_temp:-0}
+  if [[ -n "${g_mem_t:-}" && "$g_mem_t" -gt 0 ]]; then
+    vram=$(( g_mem_u * 100 / g_mem_t ))
+  fi
+fi
+
+printf '{"cpu":%d,"cpu_t":%d,"gpu":%d,"gpu_t":%d,"ram":%d,"vram":%d}\n' \
+  "$cpu" "$cpu_t" "$gpu" "$gpu_t" "$ram" "$vram"

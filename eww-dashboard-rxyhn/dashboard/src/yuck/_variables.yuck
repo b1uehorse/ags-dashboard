@@ -7,17 +7,15 @@
 (defpoll NAME  :interval "5m"  "hostname")
 (defpoll UNAME :interval "5m"  "whoami")
 
-;; Systray Variables
-(defpoll ram-usage 			:interval "1s"  "~/.config/eww/dashboard/scripts/sys_info --mem")
-(defpoll battery-capacity 	:interval "1s"  "~/.config/eww/dashboard/scripts/sys_info --bat")
-(defpoll current-brightness :interval "1s"  "~/.config/eww/dashboard/scripts/sys_info --bri")
-(defpoll current-volume 	:interval "1s"  "~/.config/eww/dashboard/scripts/sys_info --vol")
+;; Sysbar metrics — один JSON: cpu, cpu_t, gpu, gpu_t, ram, vram
+(defpoll metrics :interval "2s" :initial `{"cpu":0,"cpu_t":0,"gpu":0,"gpu_t":0,"ram":0,"vram":0}`
+  "~/.config/eww/dashboard/scripts/metrics")
 
 ;; Time Variables
 (defpoll hour 	:interval "1s" `date +%H`)
 (defpoll minute :interval "1s" `date +%M`)
 (defpoll day 	:interval "1s" `date "+%A"`)
-(defpoll date 	:interval "1s" `date "+%D"`)
+(defpoll date 	:interval "30s" `date "+%d %b"`)
 	
 ;; Music Variables
 (defpoll art		:interval "5s"  "~/.config/eww/dashboard/scripts/music coverloc")
@@ -48,6 +46,26 @@
 (defpoll otherprinum 	        :interval "10s" "~/.config/eww/dashboard/scripts/check-todo otherprinum")
 (defpoll next_appointment       :interval "1m"  "~/.config/eww/dashboard/scripts/check-todo appoint")
 (defpoll next_appointment_time  :interval "1m"  "~/.config/eww/dashboard/scripts/check-todo appoint-time")
+
+;; QuickCmd Variables — мини-терминал в дашборде
+(defvar cmd-input "")
+(defvar cmd-out   "")
+
+;; ccu — пушится с мака в /tmp/ccu.txt раз в минуту, четыре поля
+(defpoll ccu-session-pct :interval "30s" :initial "0"  "~/.config/eww/dashboard/scripts/ccu --session-pct")
+(defpoll ccu-week-pct    :interval "30s" :initial "0"  "~/.config/eww/dashboard/scripts/ccu --week-pct")
+(defpoll ccu-session-eta :interval "30s" :initial "—"  "~/.config/eww/dashboard/scripts/ccu --session-eta")
+(defpoll ccu-week-eta    :interval "30s" :initial "—"  "~/.config/eww/dashboard/scripts/ccu --week-eta")
+
+;; Sticker — статичный текст, редактируется ТОЛЬКО командой `sticker "..."` из терма
+(defpoll sticker-text :interval "2s" :initial "— пусто —"
+    "~/.config/eww/dashboard/scripts/sticker")
+
+;; Oscillo Variables — «линия-волна» из cava, 60 баров 0..100, якорятся в центр
+;; Путь абсолютный: EWWCONFIGDIR доступен в виджетах, но НЕ в defpoll/deflisten
+(deflisten oscillo-bars
+    :initial "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]"
+    "~/.config/eww/dashboard/scripts/oscillo")
 
 ;; Task Variables
 (defpoll uptime			        :interval "60s"  "~/.config/eww/dashboard/scripts/task up")

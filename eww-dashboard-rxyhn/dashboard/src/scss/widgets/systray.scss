@@ -1,39 +1,57 @@
-.systray-circular{
-	font-family: JetBrainsMono Nerd Font;
-	font-size: 2em;
-}
-.radial-ram-box,
-.radial-bat-box,
-.radial-volume-box,
-.radial-brightness-box{
-	font-family: "Font Awesome 5 Pro";
-	background-color: $background;
-	padding: 1.5rem 2.3rem 1.5rem 2.3rem;
+// Sysbar: линейные метрики. Три ряда по две ячейки, каждая — иконка/лейбл/значение
+// над горизонтальной полоской прогресса. Никаких circular-progress.
+
+.sysbar {
+	@include tile;
+	padding: 12px 14px;
 	margin: .5rem;
-	border-radius: 2rem 0;
-}
-.brightness-radial,
-.volume-radial,
-.bat-radial,
-.ram-radial{
-	background-color: $background-alt2;
-}
-.brightness-radial-label,
-.volume-radial-label,
-.bat-radial-label,
-.ram-radial-label{
-	padding: 2.5rem;
-}
-.brightness-radial{
-	color: $yellow;
-}
-.volume-radial{
-	color: $magenta;
-}
-.bat-radial{
-	color: $green;
-}
-.ram-radial{
-	color: $blue;
+	min-width: 230px;
 }
 
+.metric-cell {
+	padding: 2px 0;
+
+	.metric-icon {
+		font-family: "Symbols Nerd Font", "JetBrainsMono Nerd Font";
+		font-size: 14px;
+		color: $foreground;
+	}
+
+	.metric-label {
+		font-family: "JetBrainsMono Nerd Font";
+		font-size: 11px;
+		color: rgba(169, 177, 214, 0.7);
+	}
+
+	.metric-value {
+		font-family: "JetBrainsMono Nerd Font";
+		font-size: 11px;
+		font-weight: bold;
+		color: $foreground;
+	}
+
+	.metric-bar {
+		min-height: 6px;
+
+		trough {
+			min-height: 6px;
+			background-color: $background-alt2;
+			border-radius: 3px;
+			border: none;
+		}
+
+		highlight,
+		progress {
+			min-height: 6px;
+			border-radius: 3px;
+		}
+	}
+}
+
+// цветовая дифференциация баров (через класс-модификатор ячейки)
+.m-cpu   .metric-bar highlight, .m-cpu   .metric-bar progress { background-color: $blue; }
+.m-ram   .metric-bar highlight, .m-ram   .metric-bar progress { background-color: $magenta; }
+.m-gpu   .metric-bar highlight, .m-gpu   .metric-bar progress { background-color: $green; }
+.m-vram  .metric-bar highlight, .m-vram  .metric-bar progress { background-color: $cyan; }
+.m-ctemp .metric-bar highlight, .m-ctemp .metric-bar progress { background-color: $yellow; }
+.m-gtemp .metric-bar highlight, .m-gtemp .metric-bar progress { background-color: $red; }

@@ -1,9 +1,7 @@
 .time{
-	background-color: $background;
-	color: $foreground;
-	margin: .5rem;
-	padding: 0 8.6rem 0 8.6rem;
-	border-radius: 12px;
+	@include tile;
+	padding: .8rem 1rem;
+	min-width: 230px;
 }
 .hour, .min, .separator-clock{
 	padding: 1rem 0 0 0;
@@ -12,7 +10,7 @@
 	font-size: 2.5em;
 }
 .separator-clock{
-	margin-top: -5px;
+	margin-top: -3px;
 }
 .day{
 	padding: .5rem;
