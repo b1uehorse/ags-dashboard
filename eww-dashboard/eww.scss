@@ -1,0 +1,35 @@
+// однотонные тайлы, без блюра и без общей подложки
+// фон окна/shell — полностью прозрачен, видимы только сами плитки
+
+$tile-bg: #1a1b26;   // tokyo-night storm
+$fg: #c0caf5;
+$font: "JetBrainsMono Nerd Font";
+
+* {
+  all: unset;
+  font-family: $font;
+  color: $fg;
+}
+
+window, .background {
+  background: transparent;
+}
+
+.shell {
+  background: transparent;
+  padding: 0;
+}
+
+.tile {
+  background-color: $tile-bg;
+  border-radius: 14px;
+}
+
+.t-profile { }
+.t-quote   { }
+.t-meter   { }
+.t-clock   { }
+.t-music   { }
+.t-weather { }
+.t-tasks   { }
+.t-apps    { }

@@ -1,0 +1,52 @@
+;; eww-dashboard — tile layout на eww (ElKowar's Wacky Widgets)
+;; layout соответствует fabric-dashboard: 3 колонки, одинаковый набор плиток.
+;; плитки однотонные (без блюра), фон окна прозрачный.
+
+(defwidget tile [?class ?width ?height]
+  (box :class "tile ${class ?: ""}"
+       :width {width ?: -1}
+       :height {height ?: -1}))
+
+(defwidget col-left []
+  (box :orientation "v" :space-evenly false :spacing 10
+       (tile :class "t-profile" :width 180 :height 220)
+       (tile :class "t-quote"   :width 180 :height 110)))
+
+(defwidget meters-row []
+  (box :orientation "h" :space-evenly false :spacing 10
+       (tile :class "t-meter" :width 72 :height 72)
+       (tile :class "t-meter" :width 72 :height 72)
+       (tile :class "t-meter" :width 72 :height 72)
+       (tile :class "t-meter" :width 72 :height 72)))
+
+(defwidget col-mid []
+  (box :orientation "v" :space-evenly false :spacing 10
+       (box :orientation "h" :space-evenly false :spacing 10
+            (box :orientation "v" :space-evenly false :spacing 10
+                 (meters-row)
+                 (tile :class "t-clock" :width 160 :height 60))
+            (tile :class "t-music" :width 240 :height 160))
+       (box :orientation "h" :space-evenly false :spacing 10
+            (tile :class "t-weather" :width 130 :height 110)
+            (tile :class "t-tasks"   :width 220 :height 110))))
+
+(defwidget col-right []
+  (box :orientation "v" :space-evenly false
+       (tile :class "t-apps" :width 60 :height 360)))
+
+(defwidget dashboard []
+  (box :class "shell" :orientation "h" :space-evenly false :spacing 16
+       (col-left)
+       (col-mid)
+       (col-right)))
+
+(defwindow dashboard
+  :monitor 0
+  :stacking "bg"
+  :exclusive false
+  :focusable false
+  :geometry (geometry :anchor "center"
+                      :x 0 :y 0
+                      :width "auto"
+                      :height "auto")
+  (dashboard))
