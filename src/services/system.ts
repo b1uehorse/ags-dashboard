@@ -1,6 +1,7 @@
 import Battery from "gi://AstalBattery";
 import Wp from "gi://AstalWp";
-import { createBinding, createPoll } from "ags";
+import { createBinding } from "ags";
+import { createPoll } from "ags/time";
 
 const batt = Battery.get_default();
 const wp = Wp.get_default();

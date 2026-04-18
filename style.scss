@@ -1,4 +1,4 @@
-$bg:         rgba(26, 27, 38, 0.58);
+$bg:         rgba(26, 27, 38, 0.35);
 $bg-solid:   #1a1b26;
 $fg:         #c0caf5;
 $muted:      #7982a9;
@@ -27,14 +27,15 @@ window, window > * {
 }
 
 .dashboard {
-    padding: 8px;
+    padding: 12px;
 }
 
 .tile {
     background-color: $bg;
     border-radius: $radius-tile;
-    padding: 1rem;
+    padding: 1.3rem;
     color: $fg;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
 // PROFILE
@@ -51,12 +52,14 @@ window, window > * {
 
 // METERS
 .meter-tile, .meter { padding: 0.7rem; min-width: 72px; min-height: 72px; }
-.meter-ring {
-    color: $accent;
-    background-color: rgba(255,255,255,0.05);
-    min-width: 56px; min-height: 56px;
-}
 .meter-icon { font-size: $font-lg; color: $fg; }
+.meter-value { font-size: $font-sm; color: $muted; }
+.meter-bar {
+    color: $accent;
+    background: transparent;
+    trough { background-color: rgba(255,255,255,0.08); border-radius: 2px; min-height: 4px; }
+    block.filled { background-color: $accent; border-radius: 2px; }
+}
 
 // CLOCK
 .clock-tile { padding: 0.6rem 1rem; min-width: 160px; }

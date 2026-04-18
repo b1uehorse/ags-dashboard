@@ -1,4 +1,4 @@
-import { createPoll } from "ags";
+import { createPoll } from "ags/time";
 
 const todoFile = "~/.todo.txt";
 

@@ -1,11 +1,10 @@
-import { Astal } from "ags/gtk4";
+import Stack from "./Stack";
 import type { Accessor } from "ags";
 
 type CircularMeterProps = {
     value: Accessor<number>;
     icon: string;
     size?: number;
-    thickness?: number;
     class?: string;
 };
 
@@ -13,22 +12,29 @@ export default function CircularMeter({
     value,
     icon,
     size = 56,
-    thickness = 6,
     class: cls = "",
 }: CircularMeterProps) {
     return (
-        <box cssClasses={["meter", ...cls.split(" ").filter(Boolean)]}>
-            <Astal.CircularProgress
-                cssClasses={["meter-ring"]}
+        <Stack
+            class={`meter ${cls}`}
+            orientation="v"
+            spacing={2}
+            halign="center"
+            valign="center"
+        >
+            <label cssClasses={["meter-icon"]} label={icon} />
+            <label
+                cssClasses={["meter-value"]}
+                label={value((v: any) => `${Math.round((v as number) * 100)}%`)}
+            />
+            <levelbar
+                cssClasses={["meter-bar"]}
                 widthRequest={size}
-                heightRequest={size}
-                startAt={0.75}
-                endAt={0.75}
-                inverted={false}
+                heightRequest={4}
+                minValue={0}
+                maxValue={1}
                 value={value}
-            >
-                <label cssClasses={["meter-icon"]} label={icon} />
-            </Astal.CircularProgress>
-        </box>
+            />
+        </Stack>
     );
 }

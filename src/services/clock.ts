@@ -1,4 +1,4 @@
-import { createPoll } from "ags";
+import { createPoll } from "ags/time";
 
 export const clockService = {
     time: createPoll("", 1000, `date +"%H:%M"`),

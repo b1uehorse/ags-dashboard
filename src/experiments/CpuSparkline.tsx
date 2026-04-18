@@ -1,6 +1,7 @@
 import Tile from "../primitives/Tile";
 import { systemService } from "../services/system";
 import { createState } from "ags";
+import { createPoll } from "ags/time";
 
 const MAX = 30;
 
