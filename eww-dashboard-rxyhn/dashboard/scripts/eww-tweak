@@ -1,49 +1,40 @@
 #!/usr/bin/env python3
-# eww-tweak — live-крутка размеров дашборда прямо на Betrayer.
-# Запускать как floating окно Hyprland: bind = SUPER, T, exec, eww-tweak
-# Значения сохраняются в ~/.local/share/eww-tweak/values.json
-
-import json
-import os
-import subprocess
-import tkinter as tk
+import json, os, subprocess, tkinter as tk
 from pathlib import Path
 
-# tkinter требует X11 — используем XWayland
+EWW_CFG = os.path.expanduser("~/.config/eww/dashboard")
+STATE   = Path.home() / ".local/share/eww-tweak/values.json"
 os.environ.setdefault("DISPLAY", ":0")
 
-EWW_CFG = os.path.expanduser("~/.config/eww/dashboard")
-STATE = Path.home() / ".local/share/eww-tweak/values.json"
-
-# (defvar-name, min, max, step, default)
+# (defvar-name, 3-char-label, lo, hi, step, default)
 KNOBS = [
-    ("profile-h",     100, 500, 10, 290),
-    ("ccu-h",          60, 300, 10, 130),
-    ("sticker-h",      60, 500, 10, 280),
-    ("sysbar-h",      100, 500, 10, 290),
-    ("clock-h",        60, 300, 10, 130),
-    ("task-h",         60, 500, 10, 280),
-    ("music-h",       100, 500, 10, 290),
-    ("placeholder-h", 100, 600, 10, 410),
-    ("col-w-narrow",  150, 400, 10, 200),
-    ("col-w-wide",    150, 400, 10, 240),
-    ("tile-gap",        0,  40,  2,   0),
+    ("profile-h",     "prf", 50,  500, 10, 130),
+    ("ccu-h",         "ccu", 30,  300, 10,  60),
+    ("sticker-h",     "stk", 30,  500, 10, 114),
+    ("sysbar-h",      "sys", 50,  500, 10, 181),
+    ("clock-h",       "clk", 30,  300, 10,  96),
+    ("task-h",        "tsk", 30,  300, 10,  60),
+    ("music-h",       "mus", 50,  500, 10, 261),
+    ("placeholder-h", "plh", 50,  600, 10, 183),
+    ("col-w-narrow",  "c.n",100,  400, 10, 150),
+    ("col-w-wide",    "c.w",100,  400, 10, 150),
+    ("tile-gap",      "gap",  0,   40,  2,   0),
+    ("dash-x",        "d.x",-600, 600, 10,   0),
+    ("dash-y",        "d.y",-400, 400, 10,   0),
 ]
 
+SCALEABLE = {"profile-h","ccu-h","sticker-h","sysbar-h","clock-h",
+             "task-h","music-h","placeholder-h","col-w-narrow","col-w-wide"}
 
 def load_state():
     if STATE.exists():
-        try:
-            return json.loads(STATE.read_text())
-        except Exception:
-            pass
+        try: return json.loads(STATE.read_text())
+        except: pass
     return {}
 
-
-def save_state(values):
+def save_state(values, scale):
     STATE.parent.mkdir(parents=True, exist_ok=True)
-    STATE.write_text(json.dumps(values, indent=2))
-
+    STATE.write_text(json.dumps({**values, "__scale__": scale}, indent=2))
 
 def push(name, value):
     subprocess.Popen(
@@ -52,64 +43,79 @@ def push(name, value):
         env={**os.environ, "XDG_RUNTIME_DIR": f"/run/user/{os.getuid()}"},
     )
 
-
 def main():
-    state = load_state()
-    values = {}
-    vars_tk = {}
-    labels = {}
+    raw = load_state()
+    scale_init = float(raw.pop("__scale__", 1.0))
+    values, vars_tk, val_labels = {}, {}, {}
 
     root = tk.Tk()
-    root.title("eww-tweak")
-    root.resizable(False, False)
+    root.tk.call("tk", "scaling", 2.22)
+    root.title("~")
+    root.resizable(True, True)
+
+    F  = ("monospace", 6)
+    FB = ("monospace", 6, "bold")
+    BTN = dict(font=F, width=1, padx=0, pady=0, relief="flat", bd=1)
+
+    current_scale = [scale_init]
 
     def commit(name, v):
         v = int(float(v))
         values[name] = v
-        labels[name].config(text=str(v))
-        push(name, v)
-        save_state(values)
+        val_labels[name].config(text=str(v))
+        push(name, int(v * current_scale[0]) if name in SCALEABLE else v)
+        save_state(values, current_scale[0])
 
     def bump(name, delta, lo, hi):
         v = max(lo, min(hi, values[name] + delta))
         vars_tk[name].set(v)
         commit(name, v)
 
-    for name, lo, hi, step, default in KNOBS:
-        init = state.get(name, default)
+    def apply_scale(s):
+        s = round(float(s), 2)
+        current_scale[0] = s
+        sc_lbl.config(text=f"{s:.2f}x")
+        for n in SCALEABLE: push(n, int(values[n] * s))
+        save_state(values, s)
+
+    # --- scale row (slider kept here) ---
+    sf = tk.Frame(root, bd=1, relief="groove")
+    sf.pack(fill="x", padx=2, pady=1)
+    tk.Label(sf, text="scl", font=FB, width=3, anchor="w").pack(side="left")
+    sc_var = tk.DoubleVar(value=scale_init)
+    sc_lbl = tk.Label(sf, text=f"{scale_init:.2f}x", font=F, width=5, anchor="e")
+    tk.Button(sf, text="−", command=lambda:(sc_var.set(round(max(0.3,sc_var.get()-0.05),2)), apply_scale(sc_var.get())), **BTN).pack(side="left")
+    tk.Scale(sf, from_=0.3, to=2.0, resolution=0.05, orient="h",
+             variable=sc_var, showvalue=False, length=100, sliderlength=8,
+             width=8, command=apply_scale).pack(side="left", padx=1)
+    tk.Button(sf, text="+", command=lambda:(sc_var.set(round(min(2.0,sc_var.get()+0.05),2)), apply_scale(sc_var.get())), **BTN).pack(side="left")
+    sc_lbl.pack(side="left")
+
+    # --- knob rows (no slider, just − val +) ---
+    for name, lbl, lo, hi, step, default in KNOBS:
+        init = raw.get(name, default)
         values[name] = init
 
-        row = tk.Frame(root, pady=2)
-        row.pack(fill="x", padx=10)
+        row = tk.Frame(root)
+        row.pack(fill="x", padx=2, pady=0)
 
-        tk.Label(row, text=name, width=15, anchor="w",
-                 font=("monospace", 10)).pack(side="left")
-
-        tk.Button(row, text="−", width=2,
-                  command=lambda n=name, s=step, l=lo, h=hi: bump(n, -s, l, h)
-                  ).pack(side="left")
+        tk.Label(row, text=lbl, font=FB, width=3, anchor="w").pack(side="left")
+        tk.Button(row, text="−", command=lambda n=name,s=step,l=lo,h=hi: bump(n,-s,l,h), **BTN).pack(side="left", padx=1)
 
         v = tk.IntVar(value=init)
         vars_tk[name] = v
-        tk.Scale(row, from_=lo, to=hi, orient="horizontal", variable=v,
-                 showvalue=False, length=260,
-                 command=lambda val, n=name: commit(n, val)
-                 ).pack(side="left", padx=4)
+        vl = tk.Label(row, textvariable=v, font=F, width=4, anchor="e",
+                      relief="sunken", bd=1)
+        vl.pack(side="left")
+        val_labels[name] = vl
 
-        tk.Button(row, text="+", width=2,
-                  command=lambda n=name, s=step, l=lo, h=hi: bump(n, s, l, h)
-                  ).pack(side="left")
+        tk.Button(row, text="+", command=lambda n=name,s=step,l=lo,h=hi: bump(n,s,l,h), **BTN).pack(side="left", padx=1)
 
-        lbl = tk.Label(row, text=str(init), width=5, anchor="e",
-                       font=("monospace", 10))
-        lbl.pack(side="left")
-        labels[name] = lbl
+        push(name, int(init * scale_init) if name in SCALEABLE else init)
 
-        # синхронизируем eww со сохранённым состоянием при старте
-        push(name, init)
-
+    root.update_idletasks()
+    root.geometry(f"{root.winfo_reqwidth()}x{root.winfo_reqheight()}")
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()

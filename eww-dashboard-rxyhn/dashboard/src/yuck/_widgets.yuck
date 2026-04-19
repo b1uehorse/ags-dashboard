@@ -154,21 +154,27 @@
 			:vexpand true
 			:spacing 12
 	(button :class "app-nautilus" :halign "center" :valign "center"
+	     :style "margin-left: ${dash-x}px; margin-top: ${dash-y}px;"
 			:tooltip "Files (Nautilus)"
 			:onclick "~/.config/eww/dashboard/scripts/open_apps --nautilus &" (label :xalign 0.5 :halign "center" :text ""))
 	(button :class "app-telegram" :halign "center" :valign "center"
+	     :style "margin-left: ${dash-x}px; margin-top: ${dash-y}px;"
 			:tooltip "Telegram"
 			:onclick "~/.config/eww/dashboard/scripts/open_apps --telegram &" (label :xalign 0.5 :halign "center" :text ""))
 	(button :class "app-code" :halign "center" :valign "center"
+	     :style "margin-left: ${dash-x}px; margin-top: ${dash-y}px;"
 			:tooltip "VSCode"
 			:onclick "~/.config/eww/dashboard/scripts/open_apps --code &" (label :xalign 0.5 :halign "center" :text ""))
 	(button :class "app-firefox" :halign "center" :valign "center"
+	     :style "margin-left: ${dash-x}px; margin-top: ${dash-y}px;"
 			:tooltip "Firefox"
 			:onclick "~/.config/eww/dashboard/scripts/open_apps --firefox &" (label :xalign 0.5 :halign "center" :text ""))
 	(button :class "app-github" :halign "center" :valign "center"
+	     :style "margin-left: ${dash-x}px; margin-top: ${dash-y}px;"
 			:tooltip "GitHub"
 			:onclick "~/.config/eww/dashboard/scripts/open_apps --github &" (label :xalign 0.5 :halign "center" :text ""))
 	(button :class "app-spotify" :halign "center" :valign "center"
+	     :style "margin-left: ${dash-x}px; margin-top: ${dash-y}px;"
 			:tooltip "Spotify"
 			:onclick "~/.config/eww/dashboard/scripts/open_apps --spotify &" (label :xalign 0.5 :halign "center" :text ""))
 	)
@@ -202,73 +208,25 @@
 	)
 )
 
-;; Task Widgets
+;; Task Widgets — только кнопки питания/управления
 (defwidget task-list[]
-	(box 	:orientation "v"
-		 	:space-evenly "false"
-		 	:valign "center"
-	(box	:class "appointment"
-			:orientation "h"
-			:space-evenly "false"
-	(label  :class "appointment-label"
-			:text "Next: ")
-	(label  :class "appointment-text"
-			:text next_appointment)
-	(label  :class "appointment-label"
-			:text " in ")
-    (label  :class "appointment-text-time"
-			:text next_appointment_time))
-	(box 	:class "task-list-box"
-			:orientation "v"
-	(box 	:class "todo"
-		 	:orientation "h"
-		 	:space-evenly "false"
-			:spacing 20
-	(label 	:class "tasklabel-todo"
-			:text "")
-	(label  :class "todo-text"
-			:text "${todo-apri-num} high priority, ${todo-total} total"))
-	(box 	:class "uptime"
-		 	:orientation "h"
-		 	:space-evenly "false"
-			:spacing 20
-		(label 	:class "tasklabel-time"
-				:text "")
-		(label  :class "uptime-text"
-				:text "${uptime} uptime"))
-		(box	:class "mem-usage"
-				:orientation "h"
-				:space-evenly "false"
-				:spacing 20
-		(label 	:class "tasklabel-mem"
-				:text "")
-		(label  :class "mem-usage"
-				:text "${mem-usage} used"))
-
-		(box	:class "disk-usage"
-			:orientation "h"
-			:space-evenly "false"
-			:spacing 20
-		(label 	:class "tasklabel"
-				:text "")
-		(label  :class "disk-usage"
-				:text "${disk-usage} free")))
-
 	(box	:orientation "h"
 			:space-evenly "false"
 			:class "powermenu"
+			:valign "center"
+			:halign "center"
+			:hexpand true
 			:spacing 45
 			(button :class "poweroff" :tooltip "Shutdown"
-			:onclick "systemctl poweroff &" "")
+			:onclick "systemctl poweroff &" "")
 			(button :class "reboot" :tooltip "Reboot"
-			:onclick "systemctl reboot &" "")
+			:onclick "systemctl reboot &" "")
 			(button :class "lock" :tooltip "Lock"
-			:onclick "hyprlock &" "")
+			:onclick "hyprlock &" "")
 			(button :class "exit" :tooltip "Logout Hyprland"
-			:onclick "hyprctl dispatch exit &" "")
+			:onclick "hyprctl dispatch exit &" "")
 			(button :class "close" :tooltip "Close dashboard"
-			:onclick "eww -c $HOME/.config/eww/dashboard close dashboard &" ""))
-))
+			:onclick "eww -c $HOME/.config/eww/dashboard close dashboard &" "")))
 (defwidget task[]
 	(box :orientation "h"
 		 :space-evenly "false"
@@ -409,6 +367,7 @@
 (defwidget dashboard[]
 	(box :orientation "h" :class "dashboard" :space-evenly "false"
 	     :halign "center" :valign "center"
+	     :style "margin-left: ${dash-x}px; margin-top: ${dash-y}px;"
 		(col-left)
 		(col-mid)
 		(col-right)))

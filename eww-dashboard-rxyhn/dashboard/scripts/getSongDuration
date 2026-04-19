@@ -1,5 +1,81 @@
-#!/bin/sh
-# прогресс-бар: возвращает 0-100 для scale в eww
-[ -n "$(pgrep ncspot)" ] && Control="ncspot" || { echo "0"; exit; }
-playerctl --player="$Control" position 2>/dev/null | awk -v len="$(playerctl --player="$Control" metadata --format "{{mpris:length}}" 2>/dev/null)" \
-  "{ if (len+0 > 0) printf \"%.0f\", (\$1 * 1000000 / len) * 100; else print 0 }" || echo "0"
+#!/usr/bin/env python3
+# Прогресс трека из Spotify Web API в % (0-100).
+# Если ncspot не запущен или API недоступен — возвращает 0.
+
+import base64
+import json
+import time
+import urllib.request
+from pathlib import Path
+
+CLIENT_ID     = "360b6943c1dd41a3a440f60e5e1159be"
+CLIENT_SECRET = "83793150f3634039b5b08b791a4527c1"
+REDIRECT_URI  = "http://[::1]:8000/callback"
+TOKEN_FILE    = Path.home() / ".config/ncspot/spotify-tokens.json"
+
+
+def load_tokens():
+    if not TOKEN_FILE.exists():
+        return None
+    try:
+        return json.loads(TOKEN_FILE.read_text())
+    except Exception:
+        return None
+
+
+def refresh_access_token(tokens):
+    refresh_token = tokens.get("refresh_token")
+    if not refresh_token:
+        return None
+    credentials = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
+    data = f"grant_type=refresh_token&refresh_token={refresh_token}".encode()
+    req = urllib.request.Request(
+        "https://accounts.spotify.com/api/token",
+        data=data,
+        headers={
+            "Authorization": f"Basic {credentials}",
+            "Content-Type":  "application/x-www-form-urlencoded",
+        },
+    )
+    try:
+        resp = json.loads(urllib.request.urlopen(req, timeout=3).read())
+        tokens["access_token"] = resp["access_token"]
+        tokens["expires_at"]   = int(time.time()) + resp.get("expires_in", 3600)
+        if "refresh_token" in resp:
+            tokens["refresh_token"] = resp["refresh_token"]
+        TOKEN_FILE.write_text(json.dumps(tokens, indent=2))
+        return tokens["access_token"]
+    except Exception:
+        return None
+
+
+def get_access_token():
+    tokens = load_tokens()
+    if not tokens:
+        return None
+    expires_at = tokens.get("expires_at", 0)
+    if int(time.time()) >= expires_at - 30:
+        return refresh_access_token(tokens)
+    return tokens.get("access_token")
+
+
+def get_progress():
+    token = get_access_token()
+    if not token:
+        return 0
+    req = urllib.request.Request(
+        "https://api.spotify.com/v1/me/player",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    try:
+        resp = json.loads(urllib.request.urlopen(req, timeout=3).read())
+        progress_ms = resp.get("progress_ms", 0)
+        duration_ms = (resp.get("item") or {}).get("duration_ms", 0)
+        if duration_ms > 0:
+            return int(progress_ms / duration_ms * 100)
+    except Exception:
+        pass
+    return 0
+
+
+print(get_progress())

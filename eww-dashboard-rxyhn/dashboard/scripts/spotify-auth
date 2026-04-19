@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+# Одноразовая авторизация Spotify. Запустить один раз на Betrayer.
+# Запускает локальный HTTP-сервер на [::1]:8000, ловит callback автоматически.
+# Сохраняет токены в ~/.config/ncspot/spotify-tokens.json
+
+import base64
+import json
+import socket
+import time
+import urllib.parse
+import urllib.request
+from pathlib import Path
+
+CLIENT_ID     = "360b6943c1dd41a3a440f60e5e1159be"
+CLIENT_SECRET = "83793150f3634039b5b08b791a4527c1"
+REDIRECT_URI  = "http://[::1]:8000/callback"
+SCOPE         = "user-read-playback-state"
+TOKEN_FILE    = Path.home() / ".config/ncspot/spotify-tokens.json"
+
+params = {
+    "client_id":     CLIENT_ID,
+    "response_type": "code",
+    "redirect_uri":  REDIRECT_URI,
+    "scope":         SCOPE,
+}
+auth_url = "https://accounts.spotify.com/authorize?" + urllib.parse.urlencode(params)
+
+print("Открой в браузере (или скопируй):")
+print()
+print(auth_url)
+print()
+print("Жду callback на [::1]:8000 ...")
+
+# Локальный сервер на IPv6 loopback
+srv = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+srv.bind(("::1", 8000))
+srv.listen(1)
+srv.settimeout(120)
+
+try:
+    conn, _ = srv.accept()
+    data = conn.recv(4096).decode(errors="ignore")
+    conn.sendall(b"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"
+                 b"<h2>OK! Можно закрыть вкладку.</h2>")
+    conn.close()
+finally:
+    srv.close()
+
+# Вытащить code из GET-запроса
+first_line = data.split("\r\n")[0]  # GET /callback?code=XXX HTTP/1.1
+path = first_line.split(" ")[1]
+code = urllib.parse.parse_qs(urllib.parse.urlparse(path).query).get("code", [None])[0]
+if not code:
+    print("Код не найден. Попробуй снова.")
+    exit(1)
+
+print("Код получен, обмениваю на токены...")
+
+credentials = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
+data = urllib.parse.urlencode({
+    "grant_type":   "authorization_code",
+    "code":         code,
+    "redirect_uri": REDIRECT_URI,
+}).encode()
+req = urllib.request.Request(
+    "https://accounts.spotify.com/api/token",
+    data=data,
+    headers={
+        "Authorization": f"Basic {credentials}",
+        "Content-Type":  "application/x-www-form-urlencoded",
+    },
+)
+resp = json.loads(urllib.request.urlopen(req).read())
+resp["expires_at"] = int(time.time()) + resp.get("expires_in", 3600)
+
+TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
+TOKEN_FILE.write_text(json.dumps(resp, indent=2))
+print(f"Готово. Токены сохранены в {TOKEN_FILE}")

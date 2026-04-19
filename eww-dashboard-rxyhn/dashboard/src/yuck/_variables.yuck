@@ -6,17 +6,19 @@
 ;; Layout knobs — крутятся через tkinter-панель на маке (`eww-tweak`).
 ;; Меняем `eww update <name>=<value>`, виджеты реактивно перерисовываются
 ;; через inline-style. Когда значение устоялось — фиксируем тут.
-(defvar profile-h     "290")
-(defvar ccu-h         "130")
-(defvar sticker-h     "280")
-(defvar sysbar-h      "290")
-(defvar clock-h       "130")
-(defvar task-h        "280")
-(defvar music-h       "290")
-(defvar placeholder-h "410")
-(defvar col-w-narrow  "200")
-(defvar col-w-wide    "240")
+(defvar profile-h     "130")
+(defvar ccu-h         "60")
+(defvar sticker-h     "114")
+(defvar sysbar-h      "181")
+(defvar clock-h       "96")
+(defvar task-h        "60")
+(defvar music-h       "261")
+(defvar placeholder-h "183")
+(defvar col-w-narrow  "150")
+(defvar col-w-wide    "150")
 (defvar tile-gap      "0")
+(defvar dash-x        "0")
+(defvar dash-y        "0")
 
 ;; Profile Variables
 (defpoll NAME  :interval "5m"  "hostname")
