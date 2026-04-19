@@ -1,2 +1,5 @@
-#/usr/bin/env sh
-mpc status | grep "%)" | awk '{ print $4 }' | awk -F% '{ print $1 }' | awk 'sub(/^.{1}/,"")' 
+#!/bin/sh
+# прогресс-бар: возвращает 0-100 для scale в eww
+[ -n "$(pgrep ncspot)" ] && Control="ncspot" || { echo "0"; exit; }
+playerctl --player="$Control" position 2>/dev/null | awk -v len="$(playerctl --player="$Control" metadata --format "{{mpris:length}}" 2>/dev/null)" \
+  "{ if (len+0 > 0) printf \"%.0f\", (\$1 * 1000000 / len) * 100; else print 0 }" || echo "0"

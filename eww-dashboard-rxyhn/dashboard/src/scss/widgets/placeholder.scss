@@ -1,0 +1,13 @@
+// Placeholder-тайл на месте oscillo+quickcmd. Высота = сумма обоих
+// + естественный gap колонки, чтобы нижняя граница колонки не уехала.
+.placeholder {
+	@include tile;
+	padding: .8rem 1rem;
+	min-width: 200px;
+}
+.placeholder-text {
+	font-family: "JetBrainsMono Nerd Font";
+	font-size: 1em;
+	color: $foreground;
+	opacity: .5;
+}

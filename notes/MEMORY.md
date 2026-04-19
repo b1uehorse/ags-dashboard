@@ -1,0 +1,4 @@
+- [SSH timeouts must be short](feedback_ssh_timeouts.md) — ConnectTimeout=2 максимум, никаких 10-20s probe'ов
+- [Screenshot verification for visual work](feedback_screenshot_verify.md) — после каждого визуального изменения делать grim+Read png, не гадать
+- [Hyprland 0.54 layerrule syntax](project_hyprland_layerrule_054.md) — только блочная форма с name=, inline не парсится
+- [Dashboard stack choice — Fabric](project_dashboard_stack.md) — дашборд на Fabric (~/fabric-dashboard), AGS заморожен

@@ -4,11 +4,12 @@
 
 
 ;;  Profile Widgets
-(defwidget profile [] 
-    (box :orientation "v" 
-		 :space-evenly "false" 
-		 :class "profile" 
-    (box :orientation "h" 
+(defwidget profile []
+    (box :orientation "v"
+		 :space-evenly "false"
+		 :class "profile"
+		 :style "min-height: ${profile-h}px;"
+    (box :orientation "h"
 		 :space-evenly "false" 
     (box :class "pfp"))
     (box :orientation "v" :space-evenly "false"  
@@ -40,6 +41,7 @@
        :spacing 8
        :hexpand true
        :halign "fill"
+       :style "min-height: ${sysbar-h}px;"
     (box :orientation "h" :space-evenly true :homogeneous true :spacing 10
       (metric-cell :icon "" :label "cpu"  :value {metrics.cpu}  :unit "%"  :class "m-cpu")
       (metric-cell :icon "󰍛" :label "ram"  :value {metrics.ram}  :unit "%"  :class "m-ram"))
@@ -59,6 +61,7 @@
 			:valign "center"
 			:hexpand true
 			:halign "fill"
+			:style "min-height: ${clock-h}px;"
 	(box 	:orientation "h"
 			:class "date"
 			:space-evenly "false"
@@ -78,11 +81,13 @@
 
 
 ;;  Music Widgets
-(defwidget music [] 
+(defwidget music []
 	(box 	:class "music-player"
-			:orientation "v" 
-		 	:space-evenly "false"  
-		 	:halign "center"
+			:orientation "v"
+		 	:space-evenly "false"
+		 	:halign "fill"
+		 	:hexpand true
+		 	:style "min-height: ${music-h}px;"
 	(box 	:class "album_art" 
 		 	:style "background-image: url('${art}');")
 	(box 	:orientation "v" 
@@ -267,10 +272,10 @@
 (defwidget task[]
 	(box :orientation "h"
 		 :space-evenly "false"
-		 :vexpand true
 		 :hexpand true
 		 :halign "fill"
 		 :class "task"
+		 :style "min-height: ${task-h}px;"
 	(box :class "task-list"
 		(task-list))
 	)
@@ -313,6 +318,7 @@
 	     :orientation "v"
 	     :space-evenly "false"
 	     :spacing 6
+	     :style "min-height: ${ccu-h}px;"
 		(box :orientation "h" :space-evenly "false" :spacing 6
 			(label :class "ccu-icon" :text "󰣇")
 			(label :class "ccu-title" :text "claude usage" :halign "start" :hexpand true))
@@ -333,7 +339,7 @@
 	(box :class "tile sticker-tile"
 	     :orientation "v"
 	     :space-evenly "false"
-	     :vexpand true
+	     :style "min-height: ${sticker-h}px;"
 	     :spacing 4
 		(box :orientation "h" :space-evenly "false" :spacing 6
 			(label :class "sticker-icon" :text "")
@@ -361,35 +367,48 @@
 				     :valign "center"
 				     :style "min-height: ${v + 2}px;")))))
 
+;; Placeholder-тайл вместо oscillo+quickcmd. Суммарная высота обоих,
+;; чтобы не ломать вертикальный ритм правой колонки. Что здесь будет — пока tbd.
+(defwidget placeholder []
+	(box :class "tile placeholder"
+	     :orientation "v"
+	     :space-evenly "false"
+	     :hexpand true
+	     :halign "fill"
+	     :style "min-height: ${placeholder-h}px;"
+		(label :class "placeholder-text"
+		       :text "placeholder"
+		       :halign "center"
+		       :valign "center")))
+
 ;; Main WIdgets
 ;; Layout: три главные колонки + «лаба» справа перед app-column
 ;; Layout по референсу rxyhn: 4 колонки + app-rail
 (defwidget col-left []
-	(box :orientation "v" :space-evenly "false" :width 200 :class "side-col"
+	(box :orientation "v" :space-evenly "false" :class "side-col"
+	     :style "min-width: ${col-w-narrow}px;"
+	     :spacing {tile-gap}
 		(profile)
 		(ccu-tile)
-		(box :vexpand true :orientation "v" :space-evenly "false"
-			(sticker))))
+		(sticker)))
 
 (defwidget col-mid []
-	;; монолитная колонка: sysbar → clock → task, все одной ширины
 	(box :orientation "v" :space-evenly "false"
+	     :spacing {tile-gap}
 		(sysbar)
 		(clock)
-		(box :vexpand true :orientation "v" :space-evenly "false"
-			(task))))
+		(task)))
 
 (defwidget col-right []
-	(box :orientation "v" :space-evenly "false" :width 200 :class "side-col"
+	(box :orientation "v" :space-evenly "false" :class "side-col"
+	     :style "min-width: ${col-w-wide}px;"
+	     :spacing {tile-gap}
 		(music)
-		(oscillo)
-		(box :vexpand true :orientation "v" :space-evenly "false"
-			(quickcmd))))
+		(placeholder)))
 
 (defwidget dashboard[]
 	(box :orientation "h" :class "dashboard" :space-evenly "false"
 	     :halign "center" :valign "center"
 		(col-left)
 		(col-mid)
-		(col-right)
-		(box :orientation "v" :space-evenly "false" (app))))
+		(col-right)))
