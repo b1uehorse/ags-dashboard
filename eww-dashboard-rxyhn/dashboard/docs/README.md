@@ -12,6 +12,7 @@
 5. **[styling.md](styling.md)** — палитра, миксины, шрифты, GTK3-ограничения, под-узлы, Pango markup, `:hexpand/:vexpand`
 6. **[windows.md](windows.md)** — geometry/anchor/stacking/namespace, мультимонитор, pin-to-workspace
 7. **[shell-safety.md](shell-safety.md)** — quoting, injection, опасные паттерны onclick/input
+8. **[remote-workflow.md](remote-workflow.md)** — правки с мака, запуск eww/grim по SSH, env-переменные для GTK, рецепт симметрии колонок
 
 ## Рецепты (копипаст-готовые виджеты)
 

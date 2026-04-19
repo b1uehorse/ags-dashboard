@@ -365,7 +365,7 @@
 ;; Layout: три главные колонки + «лаба» справа перед app-column
 ;; Layout по референсу rxyhn: 4 колонки + app-rail
 (defwidget col-left []
-	(box :orientation "v" :space-evenly "false"
+	(box :orientation "v" :space-evenly "false" :width 200 :class "side-col"
 		(profile)
 		(ccu-tile)
 		(box :vexpand true :orientation "v" :space-evenly "false"
@@ -380,7 +380,7 @@
 			(task))))
 
 (defwidget col-right []
-	(box :orientation "v" :space-evenly "false"
+	(box :orientation "v" :space-evenly "false" :width 200 :class "side-col"
 		(music)
 		(oscillo)
 		(box :vexpand true :orientation "v" :space-evenly "false"
